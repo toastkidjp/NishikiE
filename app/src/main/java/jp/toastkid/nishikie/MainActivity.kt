@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
      * Make pick image intent.
      * @return [Intent]
      */
-    fun makePickImage(): Intent {
+    private fun makePickImage(): Intent {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = "image/*"
@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
@@ -94,13 +93,21 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    /**
+     * Set current image to preview-area and app-widget.
+     * @param bitmap Nullable [Bitmap]
+     */
     private fun setCurrentImage(bitmap: Bitmap?) {
         current_image.setImageBitmap(bitmap)
         Provider.updateWidget(this, RemoteViewsFactory.make(this))
     }
 
     companion object {
-        const val IMAGE_READ_REQUEST: Int = 1
+
+        /**
+         * Internal request code.
+         */
+        private const val IMAGE_READ_REQUEST: Int = 1
 
         fun makeIntent(context: Context): Intent {
             val intent = Intent(context, MainActivity::class.java)
