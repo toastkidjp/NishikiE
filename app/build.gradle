@@ -1,0 +1,42 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+
+    byte verMajor  = 0;
+    byte verMiddle = 0;
+    byte verMinor  = 1;
+
+    defaultConfig {
+        applicationId "jp.toastkid.stickywidget"
+        minSdkVersion 16
+        targetSdkVersion 26
+        if (verMiddle >= 100 || verMinor >= 100) {
+            throw new IllegalStateException("Middle and Minor version value is allowed under 100.")
+        }
+        versionCode ((verMajor * 10000) + (verMiddle * 100) + verMinor)
+        versionName "${verMajor}.${verMiddle}.${verMinor}"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    testCompile 'junit:junit:4.12'
+}
