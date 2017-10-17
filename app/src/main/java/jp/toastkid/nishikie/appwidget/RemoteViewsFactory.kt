@@ -1,8 +1,10 @@
 package jp.toastkid.nishikie.appwidget
 
+import android.app.PendingIntent
 import android.content.Context
 import android.net.Uri
 import android.widget.RemoteViews
+import jp.toastkid.nishikie.MainActivity
 import jp.toastkid.nishikie.R
 import jp.toastkid.nishikie.libs.ImageFileLoader
 import jp.toastkid.nishikie.libs.PreferenceApplier
@@ -46,12 +48,15 @@ internal object RemoteViewsFactory {
      * @param remoteViews
      */
     private fun setTapActions(context: Context, remoteViews: RemoteViews) {
-        /*remoteViews.setOnClickPendingIntent(
-                R.id.widget_search, PendingIntentFactory.makeSearchLauncher(context))
         remoteViews.setOnClickPendingIntent(
-                R.id.widget_launcher, PendingIntentFactory.launcher(context))
-        remoteViews.setOnClickPendingIntent(
-                R.id.widget_barcode_reader, PendingIntentFactory.barcode(context))*/
+                R.id.image,
+                PendingIntent.getActivity(
+                        context,
+                        1,
+                        MainActivity.makeIntent(context),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                )
+        )
     }
 
 }

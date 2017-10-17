@@ -2,6 +2,7 @@ package jp.toastkid.nishikie
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -97,5 +98,11 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val IMAGE_READ_REQUEST: Int = 1
+
+        fun makeIntent(context: Context): Intent {
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            return intent
+        }
     }
 }
