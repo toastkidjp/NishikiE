@@ -5,10 +5,12 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import jp.toastkid.nishikie.libs.ImageFileLoader
 import jp.toastkid.nishikie.libs.PreferenceApplier
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -28,6 +30,15 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { startActivityForResult(makePickImage(), IMAGE_READ_REQUEST) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (PreferenceApplier(this).image.isEmpty()) {
+            return
+        }
+        ImageFileLoader.loadBitmap(this, Uri.fromFile(File(PreferenceApplier(this).image)))
+                .let { setCurrentImage(it) }
     }
 
     /**
@@ -78,6 +89,10 @@ class MainActivity : AppCompatActivity() {
             sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    fun setCurrentImage(bitmap: Bitmap?) {
+        current_image.setImageBitmap(bitmap)
     }
 
     companion object {

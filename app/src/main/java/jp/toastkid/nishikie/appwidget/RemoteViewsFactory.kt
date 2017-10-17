@@ -1,11 +1,10 @@
 package jp.toastkid.nishikie.appwidget
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.widget.RemoteViews
 import jp.toastkid.nishikie.R
+import jp.toastkid.nishikie.libs.ImageFileLoader
 import jp.toastkid.nishikie.libs.PreferenceApplier
 import java.io.File
 
@@ -15,16 +14,6 @@ import java.io.File
  * @author toastkidjp
  */
 internal object RemoteViewsFactory {
-
-    /**
-     * Method name.
-     */
-    private val METHOD_NAME_SET_COLOR_FILTER = "setColorFilter"
-
-    /**
-     * Method name.
-     */
-    private val METHOD_NAME_SET_BACKGROUND_COLOR = "setBackgroundColor"
 
     /**
      * Layout ID.
@@ -43,26 +32,11 @@ internal object RemoteViewsFactory {
         val imagePath = PreferenceApplier(context).image
         println("imagePath=${imagePath}")
         if (imagePath.isNotEmpty()) {
-            loadBitmap(context, Uri.fromFile(File(imagePath)))
+            ImageFileLoader.loadBitmap(context, Uri.fromFile(File(imagePath)))
                     .let { remoteViews.setImageViewBitmap(R.id.image, it) }
         }
         setTapActions(context, remoteViews)
         return remoteViews
-    }
-
-    /**
-     * Load bitmap from file URI.
-     *
-     * @param context [Context]
-     * @param uri [Uri]
-     * @return Nullable [Bitmap]
-     */
-    private fun loadBitmap(context: Context, uri: Uri): Bitmap? {
-        val parcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
-        val fileDescriptor = parcelFileDescriptor?.fileDescriptor
-        val image = BitmapFactory.decodeFileDescriptor(fileDescriptor) ?: return null
-        parcelFileDescriptor.close()
-        return image
     }
 
     /**
