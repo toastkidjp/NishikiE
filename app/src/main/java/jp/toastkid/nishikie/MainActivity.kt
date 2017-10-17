@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import jp.toastkid.nishikie.appwidget.Provider
+import jp.toastkid.nishikie.appwidget.RemoteViewsFactory
 import jp.toastkid.nishikie.libs.ImageFileLoader
 import jp.toastkid.nishikie.libs.PreferenceApplier
 import kotlinx.android.synthetic.main.activity_main.*
@@ -92,8 +94,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    fun setCurrentImage(bitmap: Bitmap?) {
+    private fun setCurrentImage(bitmap: Bitmap?) {
         current_image.setImageBitmap(bitmap)
+        Provider.updateWidget(this, RemoteViewsFactory.make(this))
     }
 
     companion object {

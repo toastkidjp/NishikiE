@@ -32,7 +32,6 @@ internal object RemoteViewsFactory {
     fun make(context: Context): RemoteViews {
         val remoteViews = RemoteViews(context.packageName, APPWIDGET_LAYOUT_ID)
         val imagePath = PreferenceApplier(context).image
-        println("imagePath=${imagePath}")
         if (imagePath.isNotEmpty()) {
             ImageFileLoader.loadBitmap(context, Uri.fromFile(File(imagePath)))
                     .let { remoteViews.setImageViewBitmap(R.id.image, it) }
