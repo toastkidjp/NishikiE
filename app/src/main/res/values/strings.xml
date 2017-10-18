@@ -2,4 +2,6 @@
     <string name="app_name">Nishiki-E - 錦絵</string>
     <string name="action_exit">終了</string>
     <string name="message_select_image">画像を選択してください。</string>
+    <string name="close">閉じる</string>
+    <string name="title_licenses">ライセンス情報</string>
 </resources>

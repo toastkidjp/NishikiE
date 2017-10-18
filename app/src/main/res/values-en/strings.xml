@@ -2,4 +2,6 @@
     <string name="app_name">Nishiki-E ~ Sticky Photo</string>
     <string name="action_exit">Exit</string>
     <string name="message_select_image">Please could you select any image file?</string>
+    <string name="close">Close</string>
+    <string name="title_licenses">License Information</string>
 </resources>

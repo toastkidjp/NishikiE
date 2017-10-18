@@ -14,6 +14,7 @@ import android.view.MenuItem
 import jp.toastkid.nishikie.appwidget.Provider
 import jp.toastkid.nishikie.appwidget.RemoteViewsFactory
 import jp.toastkid.nishikie.libs.ImageFileLoader
+import jp.toastkid.nishikie.libs.LicenseViewer
 import jp.toastkid.nishikie.libs.PreferenceApplier
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -61,13 +62,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-
-        if (id == R.id.action_exit) {
-            finish()
-            return true
+        when (item.itemId) {
+            R.id.action_license -> {
+                LicenseViewer(this).invoke()
+                return true
+            }
+            R.id.action_exit -> {
+                finish()
+                return true
+            }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
