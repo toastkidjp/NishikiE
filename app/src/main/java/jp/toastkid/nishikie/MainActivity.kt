@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.support.customtabs.CustomTabsIntent
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -65,6 +66,16 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_license -> {
                 LicenseViewer(this).invoke()
+                return true
+            }
+            R.id.action_privacy_policy -> {
+                CustomTabsIntent.Builder()
+                        .setShowTitle(true)
+                        .setStartAnimations(this, 0, 0)
+                        .setExitAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                        .addDefaultShareMenuItem()
+                        .build()
+                        .launchUrl(this, Uri.parse(getString(R.string.link_privacy_policy)))
                 return true
             }
             R.id.action_exit -> {
