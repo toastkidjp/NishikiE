@@ -3,17 +3,17 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.2"
 
-    byte verMajor  = 0;
-    byte verMiddle = 0;
-    byte verMinor  = 1;
+    byte verMajor  = 0
+    byte verMiddle = 0
+    byte verMinor  = 1
 
     defaultConfig {
         applicationId "jp.toastkid.stickywidget"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 28
         if (verMiddle >= 100 || verMinor >= 100) {
             throw new IllegalStateException("Middle and Minor version value is allowed under 100.")
         }
@@ -36,12 +36,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    def supportLibVersion = '26.1.0'
+    def supportLibVersion = '28.0.0'
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile "com.android.support:appcompat-v7:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
-    compile "com.android.support:customtabs:${supportLibVersion}"
-    compile 'com.squareup.okio:okio:1.13.0'
-    testCompile 'junit:junit:4.12'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
+    implementation "com.android.support:design:${supportLibVersion}"
+    implementation "com.android.support:customtabs:${supportLibVersion}"
+    implementation 'com.squareup.okio:okio:1.16.0'
+    testImplementation 'junit:junit:4.12'
 }
