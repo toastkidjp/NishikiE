@@ -8,18 +8,23 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.customtabs.CustomTabsIntent
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import jp.toastkid.nishikie.appwidget.Provider
 import jp.toastkid.nishikie.appwidget.RemoteViewsFactory
+import jp.toastkid.nishikie.libs.BitmapScaling
 import jp.toastkid.nishikie.libs.ImageFileLoader
 import jp.toastkid.nishikie.libs.LicenseViewer
 import jp.toastkid.nishikie.libs.PreferenceApplier
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.Executors
 
 /**
  * Main activity.
@@ -28,6 +33,8 @@ import java.io.FileOutputStream
  */
 class MainActivity : AppCompatActivity() {
 
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,15 +42,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { startActivityForResult(makePickImage(), IMAGE_READ_REQUEST) }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (PreferenceApplier(this).image.isEmpty()) {
-            return
-        }
-        ImageFileLoader.loadBitmap(this, Uri.fromFile(File(PreferenceApplier(this).image)))
-                .let { setCurrentImage(it) }
     }
 
     /**
@@ -92,20 +90,36 @@ class MainActivity : AppCompatActivity() {
             data: Intent?
     ) {
 
+        val imageUri = data?.data
         if (requestCode == IMAGE_READ_REQUEST
                 && resultCode == Activity.RESULT_OK
-                && data != null) {
-            val parcelFileDescriptor = this.contentResolver.openFileDescriptor(data.data, "r")
-            val fileDescriptor = parcelFileDescriptor.fileDescriptor
-            val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-            parcelFileDescriptor.close()
-
-            val output = File(filesDir, "image.png")
-            PreferenceApplier(this).image = output.path
-            image.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
-            sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
+                && imageUri != null
+        ) {
+            val executor = Executors.newSingleThreadExecutor()
+            executor.submit { loadImage(imageUri) }
+            //executor.shutdown()
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun loadImage(imageUri: Uri) {
+        mainThreadHandler.post { progress.visibility = View.VISIBLE }
+
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        options.inScaled = true
+
+        val image = ImageFileLoader.loadBitmap(this, imageUri)
+                ?.let { BitmapScaling(this).resizeImage(it) }
+
+        val output = File(filesDir, "image.png")
+        PreferenceApplier(this).image = output.path
+        image?.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
+        sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
+        mainThreadHandler.post {
+            setCurrentImage(image)
+            progress.visibility = View.GONE
+        }
     }
 
     /**
