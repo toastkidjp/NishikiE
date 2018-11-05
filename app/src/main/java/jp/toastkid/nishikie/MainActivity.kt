@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
         appWidgetPlacer = AppWidgetPlacer(this)
 
         fab.setOnClickListener { startActivityForResult(makePickImage(), IMAGE_READ_REQUEST) }
+
+        ImageFileLoader.loadBitmap(this, Uri.fromFile(File(PreferenceApplier(this).image)))
+                ?.let { setCurrentImage(it) }
     }
 
     /**
