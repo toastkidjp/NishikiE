@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import jp.toastkid.nishikie.appwidget.AppWidgetPlacer
 import jp.toastkid.nishikie.appwidget.Provider
 import jp.toastkid.nishikie.appwidget.RemoteViewsFactory
 import jp.toastkid.nishikie.libs.BitmapScaling
@@ -35,11 +36,15 @@ class MainActivity : AppCompatActivity() {
 
     private val mainThreadHandler = Handler(Looper.getMainLooper())
 
+    private lateinit var appWidgetPlacer: AppWidgetPlacer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
+
+        appWidgetPlacer = AppWidgetPlacer(this)
 
         fab.setOnClickListener { startActivityForResult(makePickImage(), IMAGE_READ_REQUEST) }
     }
@@ -57,11 +62,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        if (appWidgetPlacer.isTargetOs()) {
+            menuInflater.inflate(R.menu.menu_place_app_widget, menu)
+        }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_place_app_widget -> {
+                appWidgetPlacer()
+                return true
+            }
             R.id.action_license -> {
                 LicenseViewer(this).invoke()
                 return true

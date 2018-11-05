@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/action_place_app_widget"
+        android:orderInCategory="99"
+        android:title="@string/place_app_widget"
+        app:showAsAction="never"
+        />
+</menu>
