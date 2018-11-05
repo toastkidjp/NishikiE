@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.customtabs.CustomTabsIntent
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -134,6 +135,15 @@ class MainActivity : AppCompatActivity() {
         mainThreadHandler.post {
             setCurrentImage(image)
             progress.visibility = View.GONE
+            if (appWidgetPlacer.isTargetOs()) {
+                val snackbar = Snackbar.make(
+                        main_content,
+                        R.string.message_confirm_place_app_widget,
+                        Snackbar.LENGTH_LONG
+                )
+                snackbar.setAction(R.string.action_place_app_widget) { appWidgetPlacer() }
+                snackbar.show()
+            }
         }
     }
 

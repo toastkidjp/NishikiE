@@ -7,4 +7,6 @@
     <string name="privacy_policy">プライバシーポリシー</string>
     <string name="link_privacy_policy">https://tmblr.co/ZDG7Be2NVdctY</string>
     <string name="place_app_widget">ウィジェットを設置</string>
+    <string name="message_confirm_place_app_widget">Would you like to place App-Widget?</string>
+    <string name="action_place_app_widget">Place</string>
 </resources>
