@@ -8,18 +8,25 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.customtabs.CustomTabsIntent
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import jp.toastkid.nishikie.appwidget.AppWidgetPlacer
 import jp.toastkid.nishikie.appwidget.Provider
 import jp.toastkid.nishikie.appwidget.RemoteViewsFactory
+import jp.toastkid.nishikie.libs.BitmapScaling
 import jp.toastkid.nishikie.libs.ImageFileLoader
 import jp.toastkid.nishikie.libs.LicenseViewer
 import jp.toastkid.nishikie.libs.PreferenceApplier
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.Executors
 
 /**
  * Main activity.
@@ -28,22 +35,22 @@ import java.io.FileOutputStream
  */
 class MainActivity : AppCompatActivity() {
 
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
+
+    private lateinit var appWidgetPlacer: AppWidgetPlacer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { startActivityForResult(makePickImage(), IMAGE_READ_REQUEST) }
-    }
+        appWidgetPlacer = AppWidgetPlacer(this)
 
-    override fun onResume() {
-        super.onResume()
-        if (PreferenceApplier(this).image.isEmpty()) {
-            return
-        }
+        fab.setOnClickListener { startActivityForResult(makePickImage(), IMAGE_READ_REQUEST) }
+
         ImageFileLoader.loadBitmap(this, Uri.fromFile(File(PreferenceApplier(this).image)))
-                .let { setCurrentImage(it) }
+                ?.let { setCurrentImage(it) }
     }
 
     /**
@@ -59,11 +66,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        if (appWidgetPlacer.isTargetOs()) {
+            menuInflater.inflate(R.menu.menu_place_app_widget, menu)
+        }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_place_app_widget -> {
+                appWidgetPlacer()
+                return true
+            }
             R.id.action_license -> {
                 LicenseViewer(this).invoke()
                 return true
@@ -92,20 +106,45 @@ class MainActivity : AppCompatActivity() {
             data: Intent?
     ) {
 
+        val imageUri = data?.data
         if (requestCode == IMAGE_READ_REQUEST
                 && resultCode == Activity.RESULT_OK
-                && data != null) {
-            val parcelFileDescriptor = this.contentResolver.openFileDescriptor(data.data, "r")
-            val fileDescriptor = parcelFileDescriptor.fileDescriptor
-            val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-            parcelFileDescriptor.close()
-
-            val output = File(filesDir, "image.png")
-            PreferenceApplier(this).image = output.path
-            image.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
-            sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
+                && imageUri != null
+        ) {
+            val executor = Executors.newSingleThreadExecutor()
+            executor.submit { loadImage(imageUri) }
+            //executor.shutdown()
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun loadImage(imageUri: Uri) {
+        mainThreadHandler.post { progress.visibility = View.VISIBLE }
+
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        options.inScaled = true
+
+        val image = ImageFileLoader.loadBitmap(this, imageUri)
+                ?.let { BitmapScaling(this).resizeImage(it) }
+
+        val output = File(filesDir, "image.png")
+        PreferenceApplier(this).image = output.path
+        image?.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
+        sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
+        mainThreadHandler.post {
+            setCurrentImage(image)
+            progress.visibility = View.GONE
+            if (appWidgetPlacer.isTargetOs()) {
+                val snackbar = Snackbar.make(
+                        main_content,
+                        R.string.message_confirm_place_app_widget,
+                        Snackbar.LENGTH_LONG
+                )
+                snackbar.setAction(R.string.action_place_app_widget) { appWidgetPlacer() }
+                snackbar.show()
+            }
+        }
     }
 
     /**

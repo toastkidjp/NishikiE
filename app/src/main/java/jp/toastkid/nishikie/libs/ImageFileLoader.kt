@@ -23,8 +23,8 @@ object ImageFileLoader {
         val parcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
         val fileDescriptor = parcelFileDescriptor?.fileDescriptor
         val image = BitmapFactory.decodeFileDescriptor(fileDescriptor) ?: return null
-        parcelFileDescriptor.close()
-        return image
+        parcelFileDescriptor?.close()
+        return BitmapScaling(context).resizeImage(image)
     }
 
 }

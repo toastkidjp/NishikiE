@@ -1,9 +1,12 @@
 <resources>
-    <string name="app_name">Nishiki-E - 錦絵</string>
-    <string name="action_exit">終了</string>
-    <string name="message_select_image">画像を選択してください。</string>
-    <string name="close">閉じる</string>
-    <string name="title_licenses">ライセンス情報</string>
-    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="app_name">Nishiki-E ~ Sticky Photo</string>
+    <string name="action_exit">Exit</string>
+    <string name="message_select_image">Please could you select any image file?</string>
+    <string name="close">Close</string>
+    <string name="title_licenses">License Information</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="link_privacy_policy">https://tmblr.co/ZDG7Be2NVdctY</string>
+    <string name="place_app_widget">Place App Widget</string>
+    <string name="message_confirm_place_app_widget">Would you like to place App-Widget?</string>
+    <string name="action_place_app_widget">Place</string>
 </resources>
