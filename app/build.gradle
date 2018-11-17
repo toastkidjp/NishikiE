@@ -43,5 +43,6 @@ dependencies {
     implementation "com.android.support:design:${supportLibVersion}"
     implementation "com.android.support:customtabs:${supportLibVersion}"
     implementation 'com.squareup.okio:okio:1.16.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
     testImplementation 'junit:junit:4.12'
 }

@@ -8,8 +8,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -24,9 +22,11 @@ import jp.toastkid.nishikie.libs.ImageFileLoader
 import jp.toastkid.nishikie.libs.LicenseViewer
 import jp.toastkid.nishikie.libs.PreferenceApplier
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.util.concurrent.Executors
 
 /**
  * Main activity.
@@ -34,8 +34,6 @@ import java.util.concurrent.Executors
  * @author toastkidjp
  */
 class MainActivity : AppCompatActivity() {
-
-    private val mainThreadHandler = Handler(Looper.getMainLooper())
 
     private lateinit var appWidgetPlacer: AppWidgetPlacer
 
@@ -111,15 +109,15 @@ class MainActivity : AppCompatActivity() {
                 && resultCode == Activity.RESULT_OK
                 && imageUri != null
         ) {
-            val executor = Executors.newSingleThreadExecutor()
-            executor.submit { loadImage(imageUri) }
-            //executor.shutdown()
+            GlobalScope.launch {
+                loadImage(imageUri)
+            }.start()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun loadImage(imageUri: Uri) {
-        mainThreadHandler.post { progress.visibility = View.VISIBLE }
+        GlobalScope.launch(Dispatchers.Main) { progress.visibility = View.VISIBLE }
 
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
@@ -132,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         PreferenceApplier(this).image = output.path
         image?.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
         sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
-        mainThreadHandler.post {
+        GlobalScope.launch(Dispatchers.Main) {
             setCurrentImage(image)
             progress.visibility = View.GONE
             if (appWidgetPlacer.isTargetOs()) {
