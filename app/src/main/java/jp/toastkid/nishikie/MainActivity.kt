@@ -17,10 +17,7 @@ import android.view.View
 import jp.toastkid.nishikie.appwidget.AppWidgetPlacer
 import jp.toastkid.nishikie.appwidget.Provider
 import jp.toastkid.nishikie.appwidget.RemoteViewsFactory
-import jp.toastkid.nishikie.libs.BitmapScaling
-import jp.toastkid.nishikie.libs.ImageFileLoader
-import jp.toastkid.nishikie.libs.LicenseViewer
-import jp.toastkid.nishikie.libs.PreferenceApplier
+import jp.toastkid.nishikie.libs.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -48,21 +45,10 @@ class MainActivity : AppCompatActivity() {
 
         appWidgetPlacer = AppWidgetPlacer(this)
 
-        fab.setOnClickListener { startActivityForResult(makePickImage(), IMAGE_READ_REQUEST) }
+        fab.setOnClickListener { startActivityForResult(PickUpImageIntentFactory(), IMAGE_READ_REQUEST) }
 
         ImageFileLoader.loadBitmap(this, Uri.fromFile(File(PreferenceApplier(this).image)))
                 ?.let { setCurrentImage(it) }
-    }
-
-    /**
-     * Make pick image intent.
-     * @return [Intent]
-     */
-    private fun makePickImage(): Intent {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "image/*"
-        return intent
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
