@@ -35,6 +35,9 @@ import java.io.FileOutputStream
  */
 class MainActivity : AppCompatActivity() {
 
+    /**
+     * App widget place invoker.
+     */
     private lateinit var appWidgetPlacer: AppWidgetPlacer
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,6 +119,11 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    /**
+     * Load bitmap from image uri.
+     *
+     * @param imageUri [Uri]
+     */
     private fun loadImage(imageUri: Uri) {
         GlobalScope.launch(Dispatchers.Main) { progress.visibility = View.VISIBLE }
 
@@ -161,6 +169,11 @@ class MainActivity : AppCompatActivity() {
          */
         private const val IMAGE_READ_REQUEST: Int = 1
 
+        /**
+         * Make this activity's intent.
+         *
+         * @param context [Context]
+         */
         fun makeIntent(context: Context): Intent {
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
