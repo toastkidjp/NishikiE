@@ -121,7 +121,9 @@ class MainActivity : AppCompatActivity() {
         val output = File(filesDir, "image.png")
         PreferenceApplier(this).image = output.path
         image?.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
+
         sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
+
         GlobalScope.launch(Dispatchers.Main) {
             setCurrentImage(image)
             progress.visibility = View.GONE
