@@ -111,10 +111,6 @@ class MainActivity : AppCompatActivity() {
     private fun loadImage(imageUri: Uri) {
         GlobalScope.launch(Dispatchers.Main) { progress.visibility = View.VISIBLE }
 
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        options.inScaled = true
-
         val image = ImageFileLoader.loadBitmap(this, imageUri)
                 ?.let { BitmapScaling(this).resizeImage(it) }
 
