@@ -11,10 +11,9 @@ object PickUpImageIntentFactory {
      * Make pick image intent.
      * @return [Intent]
      */
-    operator fun invoke(): Intent {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "image/*"
-        return intent
-    }
+    operator fun invoke() = Intent(Intent.ACTION_GET_CONTENT)
+            .also {
+                it.addCategory(Intent.CATEGORY_OPENABLE)
+                it.type = "image/*"
+            }
 }
