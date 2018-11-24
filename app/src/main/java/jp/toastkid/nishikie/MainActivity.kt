@@ -124,15 +124,22 @@ class MainActivity : AppCompatActivity() {
             setCurrentImage(image)
             progress.visibility = View.GONE
             if (appWidgetPlacer.isTargetOs()) {
-                val snackbar = Snackbar.make(
-                        main_content,
-                        R.string.message_confirm_place_app_widget,
-                        Snackbar.LENGTH_LONG
-                )
-                snackbar.setAction(R.string.action_place_app_widget) { appWidgetPlacer() }
-                snackbar.show()
+                showSnackbar()
             }
         }
+    }
+
+    /**
+     * Show snackbar for informing complete.
+     */
+    private fun showSnackbar() {
+        val snackbar = Snackbar.make(
+                main_content,
+                R.string.message_confirm_place_app_widget,
+                Snackbar.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.action_place_app_widget) { appWidgetPlacer() }
+        snackbar.show()
     }
 
     /**
