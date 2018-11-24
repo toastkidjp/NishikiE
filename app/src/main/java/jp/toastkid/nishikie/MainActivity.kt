@@ -16,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import jp.toastkid.nishikie.appwidget.AppWidgetPlacer
+import jp.toastkid.nishikie.appwidget.AppWidgetRefresher
 import jp.toastkid.nishikie.appwidget.Provider
 import jp.toastkid.nishikie.appwidget.RemoteViewsFactory
 import jp.toastkid.nishikie.libs.*
@@ -119,8 +120,7 @@ class MainActivity : AppCompatActivity() {
         PreferenceApplier(this).image = output.path
         image?.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
 
-        LocalBroadcastManager.getInstance(this)
-                .sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
+        AppWidgetRefresher(this)()
 
         GlobalScope.launch(Dispatchers.Main) {
             setCurrentImage(image)
