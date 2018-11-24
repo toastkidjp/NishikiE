@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.Snackbar
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -118,7 +119,8 @@ class MainActivity : AppCompatActivity() {
         PreferenceApplier(this).image = output.path
         image?.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
 
-        sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
+        LocalBroadcastManager.getInstance(this)
+                .sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 
         GlobalScope.launch(Dispatchers.Main) {
             setCurrentImage(image)
