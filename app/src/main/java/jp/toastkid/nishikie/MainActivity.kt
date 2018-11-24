@@ -160,10 +160,8 @@ class MainActivity : AppCompatActivity() {
          *
          * @param context [Context]
          */
-        fun makeIntent(context: Context): Intent {
-            val intent = Intent(context, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            return intent
-        }
+        fun makeIntent(context: Context) =
+                Intent(context, MainActivity::class.java)
+                        .also { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) }
     }
 }
