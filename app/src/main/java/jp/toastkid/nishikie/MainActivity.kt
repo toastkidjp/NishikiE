@@ -59,32 +59,30 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_place_app_widget -> {
-                appWidgetPlacer()
-                return true
-            }
-            R.id.action_license -> {
-                LicenseViewer(this).invoke()
-                return true
-            }
-            R.id.action_privacy_policy -> {
-                CustomTabsIntent.Builder()
-                        .setShowTitle(true)
-                        .setStartAnimations(this, 0, 0)
-                        .setExitAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                        .addDefaultShareMenuItem()
-                        .build()
-                        .launchUrl(this, Uri.parse(getString(R.string.link_privacy_policy)))
-                return true
-            }
-            R.id.action_exit -> {
-                finish()
-                return true
-            }
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_place_app_widget -> {
+            appWidgetPlacer()
+            true
         }
-        return super.onOptionsItemSelected(item)
+        R.id.action_license -> {
+            LicenseViewer(this).invoke()
+            true
+        }
+        R.id.action_privacy_policy -> {
+            CustomTabsIntent.Builder()
+                    .setShowTitle(true)
+                    .setStartAnimations(this, 0, 0)
+                    .setExitAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                    .addDefaultShareMenuItem()
+                    .build()
+                    .launchUrl(this, Uri.parse(getString(R.string.link_privacy_policy)))
+            true
+        }
+        R.id.action_exit -> {
+            finish()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(
