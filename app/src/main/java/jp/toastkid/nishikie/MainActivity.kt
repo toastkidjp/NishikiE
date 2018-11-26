@@ -10,17 +10,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.Snackbar
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import jp.toastkid.nishikie.appwidget.AppWidgetPlacer
+import jp.toastkid.nishikie.appwidget.AppWidgetRefresher
 import jp.toastkid.nishikie.appwidget.Provider
 import jp.toastkid.nishikie.appwidget.RemoteViewsFactory
-import jp.toastkid.nishikie.libs.BitmapScaling
-import jp.toastkid.nishikie.libs.ImageFileLoader
-import jp.toastkid.nishikie.libs.LicenseViewer
-import jp.toastkid.nishikie.libs.PreferenceApplier
+import jp.toastkid.nishikie.libs.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -35,6 +34,9 @@ import java.io.FileOutputStream
  */
 class MainActivity : AppCompatActivity() {
 
+    /**
+     * App widget place invoker.
+     */
     private lateinit var appWidgetPlacer: AppWidgetPlacer
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,21 +47,10 @@ class MainActivity : AppCompatActivity() {
 
         appWidgetPlacer = AppWidgetPlacer(this)
 
-        fab.setOnClickListener { startActivityForResult(makePickImage(), IMAGE_READ_REQUEST) }
+        fab.setOnClickListener { startActivityForResult(PickUpImageIntentFactory(), IMAGE_READ_REQUEST) }
 
         ImageFileLoader.loadBitmap(this, Uri.fromFile(File(PreferenceApplier(this).image)))
                 ?.let { setCurrentImage(it) }
-    }
-
-    /**
-     * Make pick image intent.
-     * @return [Intent]
-     */
-    private fun makePickImage(): Intent {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "image/*"
-        return intent
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -70,32 +61,30 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_place_app_widget -> {
-                appWidgetPlacer()
-                return true
-            }
-            R.id.action_license -> {
-                LicenseViewer(this).invoke()
-                return true
-            }
-            R.id.action_privacy_policy -> {
-                CustomTabsIntent.Builder()
-                        .setShowTitle(true)
-                        .setStartAnimations(this, 0, 0)
-                        .setExitAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                        .addDefaultShareMenuItem()
-                        .build()
-                        .launchUrl(this, Uri.parse(getString(R.string.link_privacy_policy)))
-                return true
-            }
-            R.id.action_exit -> {
-                finish()
-                return true
-            }
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_place_app_widget -> {
+            appWidgetPlacer()
+            true
         }
-        return super.onOptionsItemSelected(item)
+        R.id.action_license -> {
+            LicenseViewer(this).invoke()
+            true
+        }
+        R.id.action_privacy_policy -> {
+            CustomTabsIntent.Builder()
+                    .setShowTitle(true)
+                    .setStartAnimations(this, 0, 0)
+                    .setExitAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                    .addDefaultShareMenuItem()
+                    .build()
+                    .launchUrl(this, Uri.parse(getString(R.string.link_privacy_policy)))
+            true
+        }
+        R.id.action_exit -> {
+            finish()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(
@@ -116,12 +105,13 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    /**
+     * Load bitmap from image uri.
+     *
+     * @param imageUri [Uri]
+     */
     private fun loadImage(imageUri: Uri) {
         GlobalScope.launch(Dispatchers.Main) { progress.visibility = View.VISIBLE }
-
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        options.inScaled = true
 
         val image = ImageFileLoader.loadBitmap(this, imageUri)
                 ?.let { BitmapScaling(this).resizeImage(it) }
@@ -129,20 +119,29 @@ class MainActivity : AppCompatActivity() {
         val output = File(filesDir, "image.png")
         PreferenceApplier(this).image = output.path
         image?.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
-        sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
+
+        AppWidgetRefresher(this)()
+
         GlobalScope.launch(Dispatchers.Main) {
             setCurrentImage(image)
             progress.visibility = View.GONE
             if (appWidgetPlacer.isTargetOs()) {
-                val snackbar = Snackbar.make(
-                        main_content,
-                        R.string.message_confirm_place_app_widget,
-                        Snackbar.LENGTH_LONG
-                )
-                snackbar.setAction(R.string.action_place_app_widget) { appWidgetPlacer() }
-                snackbar.show()
+                showSnackbar()
             }
         }
+    }
+
+    /**
+     * Show snackbar for informing complete.
+     */
+    private fun showSnackbar() {
+        val snackbar = Snackbar.make(
+                main_content,
+                R.string.message_confirm_place_app_widget,
+                Snackbar.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.action_place_app_widget) { appWidgetPlacer() }
+        snackbar.show()
     }
 
     /**
@@ -161,10 +160,13 @@ class MainActivity : AppCompatActivity() {
          */
         private const val IMAGE_READ_REQUEST: Int = 1
 
-        fun makeIntent(context: Context): Intent {
-            val intent = Intent(context, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            return intent
-        }
+        /**
+         * Make this activity's intent.
+         *
+         * @param context [Context]
+         */
+        fun makeIntent(context: Context) =
+                Intent(context, MainActivity::class.java)
+                        .also { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) }
     }
 }
