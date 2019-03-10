@@ -24,7 +24,7 @@ class LicenseViewer(private val mContext: Context) {
     operator fun invoke() {
         try {
             val assets = mContext.assets
-            val licenseFiles = assets.list(DIRECTORY_OF_LICENSES)
+            val licenseFiles = assets.list(DIRECTORY_OF_LICENSES) ?: emptyArray()
             val licenseMap = LinkedHashMap<String, String>(licenseFiles.size)
             for (fileName in licenseFiles) {
                 val stream = assets.open("$DIRECTORY_OF_LICENSES/$fileName")
