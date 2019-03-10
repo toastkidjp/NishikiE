@@ -27,7 +27,7 @@ class LicenseViewer(private val mContext: Context) {
             val licenseFiles = assets.list(DIRECTORY_OF_LICENSES)
             val licenseMap = LinkedHashMap<String, String>(licenseFiles.size)
             for (fileName in licenseFiles) {
-                val stream = assets.open(DIRECTORY_OF_LICENSES + "/" + fileName)
+                val stream = assets.open("$DIRECTORY_OF_LICENSES/$fileName")
                 licenseMap[fileName.substring(0, fileName.lastIndexOf("."))] = readUtf8(stream)
                 stream.close()
             }
