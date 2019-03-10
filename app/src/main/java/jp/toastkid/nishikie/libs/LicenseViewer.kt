@@ -34,16 +34,16 @@ class LicenseViewer(private val mContext: Context) {
             val items = licenseMap.keys.toTypedArray()
             AlertDialog.Builder(mContext).setTitle(R.string.title_licenses)
                     .setItems(items
-                    ) { d, index ->
+                    ) { _, index ->
                         AlertDialog.Builder(mContext)
                                 .setTitle(items[index])
                                 .setMessage(licenseMap[items[index]])
                                 .setCancelable(true)
-                                .setPositiveButton(R.string.close) { dialog, i -> dialog.dismiss() }
+                                .setPositiveButton(R.string.close) { dialog, _ -> dialog.dismiss() }
                                 .show()
                     }
                     .setCancelable(true)
-                    .setPositiveButton(R.string.close) { d, i -> d.dismiss() }
+                    .setPositiveButton(R.string.close) { d, _ -> d.dismiss() }
                     .show()
         } catch (e: IOException) {
             e.printStackTrace()
