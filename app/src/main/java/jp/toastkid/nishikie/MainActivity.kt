@@ -63,6 +63,12 @@ class MainActivity : AppCompatActivity() {
             appWidgetPlacer()
             true
         }
+        R.id.action_reset_current -> {
+            PreferenceApplier(this).image = ""
+            AppWidgetRefresher(this)()
+            GlobalScope.launch(Dispatchers.Main) { setCurrentImage(null) }
+            true
+        }
         R.id.action_license -> {
             LicenseViewer(this).invoke()
             true

@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="jp.toastkid.nishikie.MainActivity">
     <item
+        android:id="@+id/action_reset_current"
+        android:orderInCategory="100"
+        android:title="@string/title_reset_current_image"
+        app:showAsAction="never"
+        />
+    <item
         android:id="@+id/action_license"
         android:orderInCategory="100"
         android:title="@string/title_licenses"

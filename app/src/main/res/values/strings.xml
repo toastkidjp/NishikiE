@@ -9,4 +9,5 @@
     <string name="place_app_widget">Place App Widget</string>
     <string name="message_confirm_place_app_widget">Would you like to place App-Widget?</string>
     <string name="action_place_app_widget">Place</string>
+    <string name="title_reset_current_image">Reset current image</string>
 </resources>
