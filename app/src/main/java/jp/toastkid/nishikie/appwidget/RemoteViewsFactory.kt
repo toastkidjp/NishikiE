@@ -20,7 +20,7 @@ internal object RemoteViewsFactory {
     /**
      * Layout ID.
      */
-    private val APPWIDGET_LAYOUT_ID = R.layout.appwidget_sticky
+    private const val APPWIDGET_LAYOUT_ID = R.layout.appwidget_sticky
 
     /**
      * Make RemoteViews.
