@@ -16,14 +16,14 @@ import java.util.*
  *
  * @author toastkidjp
  */
-class LicenseViewer(private val mContext: Context) {
+class LicenseViewer(private val context: Context) {
 
     /**
      * Invoke viewer.
      */
     operator fun invoke() {
         try {
-            val assets = mContext.assets
+            val assets = context.assets
             val licenseFiles = assets.list(DIRECTORY_OF_LICENSES) ?: emptyArray()
             val licenseMap = LinkedHashMap<String, String>(licenseFiles.size)
             for (fileName in licenseFiles) {
@@ -32,10 +32,10 @@ class LicenseViewer(private val mContext: Context) {
                 stream.close()
             }
             val items = licenseMap.keys.toTypedArray()
-            AlertDialog.Builder(mContext).setTitle(R.string.title_licenses)
+            AlertDialog.Builder(context).setTitle(R.string.title_licenses)
                     .setItems(items
                     ) { _, index ->
-                        AlertDialog.Builder(mContext)
+                        AlertDialog.Builder(context)
                                 .setTitle(items[index])
                                 .setMessage(licenseMap[items[index]])
                                 .setCancelable(true)
