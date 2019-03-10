@@ -65,6 +65,6 @@ class LicenseViewer(private val mContext: Context) {
         /**
          * Directory name.
          */
-        private val DIRECTORY_OF_LICENSES = "licenses"
+        private const val DIRECTORY_OF_LICENSES = "licenses"
     }
 }
