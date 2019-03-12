@@ -9,4 +9,5 @@
     <string name="place_app_widget">ウィジェットを設置</string>
     <string name="message_confirm_place_app_widget">ホーム画面にウィジェットを設置しますか？</string>
     <string name="action_place_app_widget">設置</string>
+    <string name="title_reset_current_image">現在の画像をリセット</string>
 </resources>

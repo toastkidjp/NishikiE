@@ -16,34 +16,34 @@ import java.util.*
  *
  * @author toastkidjp
  */
-class LicenseViewer(private val mContext: Context) {
+class LicenseViewer(private val context: Context) {
 
     /**
      * Invoke viewer.
      */
     operator fun invoke() {
         try {
-            val assets = mContext.assets
-            val licenseFiles = assets.list(DIRECTORY_OF_LICENSES)
+            val assets = context.assets
+            val licenseFiles = assets.list(DIRECTORY_OF_LICENSES) ?: emptyArray()
             val licenseMap = LinkedHashMap<String, String>(licenseFiles.size)
             for (fileName in licenseFiles) {
-                val stream = assets.open(DIRECTORY_OF_LICENSES + "/" + fileName)
-                licenseMap.put(fileName.substring(0, fileName.lastIndexOf(".")), readUtf8(stream))
+                val stream = assets.open("$DIRECTORY_OF_LICENSES/$fileName")
+                licenseMap[fileName.substring(0, fileName.lastIndexOf("."))] = readUtf8(stream)
                 stream.close()
             }
             val items = licenseMap.keys.toTypedArray()
-            AlertDialog.Builder(mContext).setTitle(R.string.title_licenses)
+            AlertDialog.Builder(context).setTitle(R.string.title_licenses)
                     .setItems(items
-                    ) { d, index ->
-                        AlertDialog.Builder(mContext)
+                    ) { _, index ->
+                        AlertDialog.Builder(context)
                                 .setTitle(items[index])
                                 .setMessage(licenseMap[items[index]])
                                 .setCancelable(true)
-                                .setPositiveButton(R.string.close) { dialog, i -> dialog.dismiss() }
+                                .setPositiveButton(R.string.close) { dialog, _ -> dialog.dismiss() }
                                 .show()
                     }
                     .setCancelable(true)
-                    .setPositiveButton(R.string.close) { d, i -> d.dismiss() }
+                    .setPositiveButton(R.string.close) { d, _ -> d.dismiss() }
                     .show()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -65,6 +65,6 @@ class LicenseViewer(private val mContext: Context) {
         /**
          * Directory name.
          */
-        private val DIRECTORY_OF_LICENSES = "licenses"
+        private const val DIRECTORY_OF_LICENSES = "licenses"
     }
 }

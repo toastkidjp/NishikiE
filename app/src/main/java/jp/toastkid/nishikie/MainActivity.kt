@@ -1,16 +1,13 @@
 package jp.toastkid.nishikie
 
 import android.app.Activity
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.Snackbar
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -64,6 +61,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_place_app_widget -> {
             appWidgetPlacer()
+            true
+        }
+        R.id.action_reset_current -> {
+            PreferenceApplier(this).image = ""
+            AppWidgetRefresher(this)()
+            GlobalScope.launch(Dispatchers.Main) { setCurrentImage(null) }
             true
         }
         R.id.action_license -> {

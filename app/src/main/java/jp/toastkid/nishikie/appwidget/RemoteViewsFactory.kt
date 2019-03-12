@@ -20,7 +20,7 @@ internal object RemoteViewsFactory {
     /**
      * Layout ID.
      */
-    private val APPWIDGET_LAYOUT_ID = R.layout.appwidget_sticky
+    private const val APPWIDGET_LAYOUT_ID = R.layout.appwidget_sticky
 
     /**
      * Make RemoteViews.
@@ -35,6 +35,8 @@ internal object RemoteViewsFactory {
         if (imagePath.isNotEmpty()) {
             ImageFileLoader.loadBitmap(context, Uri.fromFile(File(imagePath)))
                     .let { remoteViews.setImageViewBitmap(R.id.image, it) }
+        } else {
+            remoteViews.setImageViewBitmap(R.id.image, null)
         }
         setTapActions(context, remoteViews)
         return remoteViews
