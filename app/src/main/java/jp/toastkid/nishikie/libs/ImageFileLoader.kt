@@ -30,7 +30,7 @@ object ImageFileLoader {
         val fileDescriptor = parcelFileDescriptor?.fileDescriptor
         val image = BitmapFactory.decodeFileDescriptor(fileDescriptor) ?: return null
         parcelFileDescriptor?.close()
-        return BitmapScaling(context).resizeImage(image)
+        return BitmapScaling.resizeImage(image)
     }
 
 }

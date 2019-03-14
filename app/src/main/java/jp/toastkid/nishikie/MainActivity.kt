@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.Main) { progress.visibility = View.VISIBLE }
 
         val image = ImageFileLoader.loadBitmap(this, imageUri)
-                ?.let { BitmapScaling(this).resizeImage(it) }
+                ?.let { BitmapScaling.resizeImage(it) }
 
         val output = File(filesDir, "image.png")
         PreferenceApplier(this).image = output.path
