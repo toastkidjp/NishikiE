@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 /**
  * @author toastkidjp
  */
-class PreferenceApplier(private val context: Context) {
+class PreferenceApplier(context: Context) {
 
     private enum class Key {
         IMAGE_PATH
