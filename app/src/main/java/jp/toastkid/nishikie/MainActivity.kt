@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun setCurrentImage(bitmap: Bitmap?) {
         current_image.setImageBitmap(bitmap)
-        Provider.updateWidget(this, RemoteViewsFactory.make(this))
+        Provider.updateWidget(this, RemoteViewsFactory().make(this))
     }
 
     companion object {

@@ -15,12 +15,7 @@ import java.io.File
  *
  * @author toastkidjp
  */
-internal object RemoteViewsFactory {
-
-    /**
-     * Layout ID.
-     */
-    private const val APPWIDGET_LAYOUT_ID = R.layout.appwidget_sticky
+internal class RemoteViewsFactory {
 
     /**
      * Make RemoteViews.
@@ -60,4 +55,12 @@ internal object RemoteViewsFactory {
         )
     }
 
+    companion object {
+
+        /**
+         * Layout ID.
+         */
+        private const val APPWIDGET_LAYOUT_ID = R.layout.appwidget_sticky
+
+    }
 }
