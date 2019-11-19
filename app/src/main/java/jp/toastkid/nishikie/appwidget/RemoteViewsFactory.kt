@@ -3,6 +3,7 @@ package jp.toastkid.nishikie.appwidget
 import android.app.PendingIntent
 import android.content.Context
 import android.net.Uri
+import android.support.annotation.LayoutRes
 import android.widget.RemoteViews
 import jp.toastkid.nishikie.MainActivity
 import jp.toastkid.nishikie.R
@@ -60,6 +61,7 @@ internal class RemoteViewsFactory {
         /**
          * Layout ID.
          */
+        @LayoutRes
         private const val APPWIDGET_LAYOUT_ID = R.layout.appwidget_sticky
 
     }
