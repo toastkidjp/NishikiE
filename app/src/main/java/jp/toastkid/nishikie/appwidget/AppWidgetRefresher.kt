@@ -10,7 +10,7 @@ package jp.toastkid.nishikie.appwidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 /**
  * App-Widget refresher. This class only call UPDATE broadcast.
