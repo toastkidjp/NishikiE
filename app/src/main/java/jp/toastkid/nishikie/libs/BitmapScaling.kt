@@ -2,6 +2,7 @@ package jp.toastkid.nishikie.libs
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import kotlin.math.sqrt
 
 /**
  * Bitmap scale utility.
@@ -23,7 +24,7 @@ object BitmapScaling {
      */
     fun resizeImage(img: Bitmap, toSize: Float = MAXIMUM_BITMAP_SIZE): Bitmap {
         val size = img.byteCount
-        val scale = Math.sqrt((toSize / size.toFloat()).toDouble()).toFloat()
+        val scale = sqrt((toSize / size.toFloat()).toDouble()).toFloat()
 
         val matrix = Matrix()
         matrix.postScale(scale, scale)
