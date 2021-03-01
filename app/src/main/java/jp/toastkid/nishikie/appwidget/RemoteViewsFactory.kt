@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.net.Uri
 import android.widget.RemoteViews
+import androidx.annotation.LayoutRes
 import jp.toastkid.nishikie.MainActivity
 import jp.toastkid.nishikie.R
 import jp.toastkid.nishikie.libs.ImageFileLoader
@@ -15,12 +16,7 @@ import java.io.File
  *
  * @author toastkidjp
  */
-internal object RemoteViewsFactory {
-
-    /**
-     * Layout ID.
-     */
-    private const val APPWIDGET_LAYOUT_ID = R.layout.appwidget_sticky
+internal class RemoteViewsFactory {
 
     /**
      * Make RemoteViews.
@@ -31,7 +27,7 @@ internal object RemoteViewsFactory {
      */
     fun make(context: Context): RemoteViews {
         val remoteViews = RemoteViews(context.packageName, APPWIDGET_LAYOUT_ID)
-        val imagePath = PreferenceApplier(context).image
+        val imagePath = PreferenceApplier(context).getImage()
         if (imagePath.isNotEmpty()) {
             ImageFileLoader.loadBitmap(context, Uri.fromFile(File(imagePath)))
                     .let { remoteViews.setImageViewBitmap(R.id.image, it) }
@@ -60,4 +56,13 @@ internal object RemoteViewsFactory {
         )
     }
 
+    companion object {
+
+        /**
+         * Layout ID.
+         */
+        @LayoutRes
+        private const val APPWIDGET_LAYOUT_ID = R.layout.appwidget_sticky
+
+    }
 }

@@ -6,12 +6,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.support.customtabs.CustomTabsIntent
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
+import com.google.android.material.snackbar.Snackbar
 import jp.toastkid.nishikie.appwidget.AppWidgetPlacer
 import jp.toastkid.nishikie.appwidget.AppWidgetRefresher
 import jp.toastkid.nishikie.appwidget.Provider
@@ -44,9 +44,9 @@ class MainActivity : AppCompatActivity() {
 
         appWidgetPlacer = AppWidgetPlacer(this)
 
-        fab.setOnClickListener { startActivityForResult(PickUpImageIntentFactory(), IMAGE_READ_REQUEST) }
+        fab.setOnClickListener { startActivityForResult(PickUpImageIntentFactory().invoke(), IMAGE_READ_REQUEST) }
 
-        ImageFileLoader.loadBitmap(this, Uri.fromFile(File(PreferenceApplier(this).image)))
+        ImageFileLoader.loadBitmap(this, Uri.fromFile(File(PreferenceApplier(this).getImage())))
                 ?.let { setCurrentImage(it) }
     }
 
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
         R.id.action_reset_current -> {
-            PreferenceApplier(this).image = ""
+            PreferenceApplier(this).setImage("")
             AppWidgetRefresher(this)()
             GlobalScope.launch(Dispatchers.Main) { setCurrentImage(null) }
             true
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                 ?.let { BitmapScaling.resizeImage(it) }
 
         val output = File(filesDir, "image.png")
-        PreferenceApplier(this).image = output.path
+        PreferenceApplier(this).setImage(output.path)
         image?.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(output))
 
         AppWidgetRefresher(this)()
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun setCurrentImage(bitmap: Bitmap?) {
         current_image.setImageBitmap(bitmap)
-        Provider.updateWidget(this, RemoteViewsFactory.make(this))
+        Provider.updateWidget(this, RemoteViewsFactory().make(this))
     }
 
     companion object {

@@ -1,7 +1,7 @@
 package jp.toastkid.nishikie.libs
 
 import android.content.Context
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import jp.toastkid.nishikie.R
 import okio.Okio
 import java.io.IOException

@@ -15,8 +15,8 @@ class PreferenceApplier(context: Context) {
     private val preferences: SharedPreferences =
             context.getSharedPreferences(javaClass.canonicalName, Context.MODE_PRIVATE)
 
-    var image: String
-        get() = preferences.getString(Key.IMAGE_PATH.name, "") ?: ""
-        set(path) = preferences.edit().putString(Key.IMAGE_PATH.name, path).apply()
+    fun getImage(): String = preferences.getString(Key.IMAGE_PATH.name, "") ?: ""
+
+    fun setImage(path: String) = preferences.edit().putString(Key.IMAGE_PATH.name, path).apply()
 
 }

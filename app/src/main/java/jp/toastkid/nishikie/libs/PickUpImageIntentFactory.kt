@@ -5,7 +5,7 @@ import android.content.Intent
 /**
  * @author toastkidjp
  */
-object PickUpImageIntentFactory {
+class PickUpImageIntentFactory {
 
     /**
      * Make pick image intent.
